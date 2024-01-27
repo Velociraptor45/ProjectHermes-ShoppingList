@@ -10,14 +10,14 @@ public class EnumSpecimenBuilder<TEnum> : ISpecimenBuilder
 
     public object Create(object request, ISpecimenContext context)
     {
-        if (!(request is TEnum))
+        if (request is TEnum || (request is SeededRequest sr && (Type)sr.Request == typeof(TEnum)))
         {
-            return new NoSpecimen();
+            var values = ((TEnum[])Enum.GetValues(typeof(TEnum)))
+                .ToList();
+
+            return _commonFixture.ChooseRandom(values);
         }
 
-        var values = ((TEnum[])Enum.GetValues(typeof(TEnum)))
-            .ToList();
-
-        return _commonFixture.ChooseRandom(values);
+        return new NoSpecimen();
     }
 }

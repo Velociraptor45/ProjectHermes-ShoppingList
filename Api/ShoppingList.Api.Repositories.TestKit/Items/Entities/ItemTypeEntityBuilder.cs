@@ -7,8 +7,8 @@ public class ItemTypeEntityBuilder : TestBuilderBase<ItemType>
 {
     public ItemTypeEntityBuilder()
     {
-        WithPredecessor(null);
-        WithItem(null!);
+        WithoutPredecessor();
+        WithoutItem();
         WithAvailableAt(ItemTypeAvailableAtEntityMother.Initial().CreateMany(3).ToList());
     }
 

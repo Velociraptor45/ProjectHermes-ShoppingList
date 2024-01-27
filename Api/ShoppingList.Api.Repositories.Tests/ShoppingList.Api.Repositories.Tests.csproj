@@ -31,6 +31,8 @@
     <ProjectReference Include="..\ShoppingList.Api.Core.TestKit\ShoppingList.Api.Core.TestKit.csproj" />
     <ProjectReference Include="..\ShoppingList.Api.Core.Tests\ShoppingList.Api.Core.Tests.csproj" />
     <ProjectReference Include="..\ShoppingList.Api.Domain.TestKit\ShoppingList.Api.Domain.TestKit.csproj" />
+    <ProjectReference Include="..\ShoppingList.Api.Domain\ShoppingList.Api.Domain.csproj" />
+    <ProjectReference Include="..\ShoppingList.Api.Repositories.TestKit\ShoppingList.Api.Repositories.TestKit.csproj" />
     <ProjectReference Include="..\ShoppingList.Api.Repositories\ShoppingList.Api.Repositories.csproj" />
     <ProjectReference Include="..\ShoppingList.Api.Vault.TestKit\ShoppingList.Api.Vault.TestKit.csproj" />
   </ItemGroup>

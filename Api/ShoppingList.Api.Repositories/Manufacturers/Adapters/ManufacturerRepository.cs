@@ -14,19 +14,19 @@ public class ManufacturerRepository : IManufacturerRepository
 {
     private readonly ManufacturerContext _dbContext;
     private readonly IToDomainConverter<Entities.Manufacturer, IManufacturer> _toModelConverter;
-    private readonly IToEntityConverter<IManufacturer, Entities.Manufacturer> _toEntityConverter;
+    private readonly IToContractConverter<IManufacturer, Entities.Manufacturer> _toContractConverter;
     private readonly ILogger<ManufacturerRepository> _logger;
     private readonly CancellationToken _cancellationToken;
 
     public ManufacturerRepository(ManufacturerContext dbContext,
         IToDomainConverter<Entities.Manufacturer, IManufacturer> toModelConverter,
-        IToEntityConverter<IManufacturer, Entities.Manufacturer> toEntityConverter,
+        IToContractConverter<IManufacturer, Entities.Manufacturer> toContractConverter,
         ILogger<ManufacturerRepository> logger,
         CancellationToken cancellationToken)
     {
         _dbContext = dbContext;
         _toModelConverter = toModelConverter;
-        _toEntityConverter = toEntityConverter;
+        _toContractConverter = toContractConverter;
         _logger = logger;
         _cancellationToken = cancellationToken;
     }
@@ -88,7 +88,7 @@ public class ManufacturerRepository : IManufacturerRepository
 
     public async Task<IManufacturer> StoreAsync(IManufacturer model)
     {
-        var convertedEntity = _toEntityConverter.ToEntity(model);
+        var convertedEntity = _toContractConverter.ToContract(model);
         var existingEntity = await FindTrackedEntityById(model.Id);
 
         if (existingEntity is null)

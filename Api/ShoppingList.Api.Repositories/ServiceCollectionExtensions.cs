@@ -87,7 +87,7 @@ public static class ServiceCollectionExtensions
             return ct => new ShoppingListRepository(
                 provider.GetRequiredService<ShoppingListContext>(),
                 provider.GetRequiredService<IToDomainConverter<ShoppingLists.Entities.ShoppingList, IShoppingList>>(),
-                provider.GetRequiredService<IToEntityConverter<IShoppingList, ShoppingLists.Entities.ShoppingList>>(),
+                provider.GetRequiredService<IToContractConverter<IShoppingList, ShoppingLists.Entities.ShoppingList>>(),
                 provider.GetRequiredService<ILogger<ShoppingListRepository>>(),
                 ct);
         });
@@ -96,8 +96,8 @@ public static class ServiceCollectionExtensions
             return ct => new ItemRepository(
                 provider.GetRequiredService<ItemContext>(),
                 provider.GetRequiredService<IToDomainConverter<Items.Entities.Item, IItem>>(),
-                provider.GetRequiredService<IToEntityConverter<IItem, Items.Entities.Item>>(),
-                provider.GetRequiredService<Func<CancellationToken, IDomainEventDispatcher>>()(ct),
+                provider.GetRequiredService<IToContractConverter<IItem, Items.Entities.Item>>(),
+                provider.GetRequiredService<IDomainEventDispatcher>(),
                 provider.GetRequiredService<ILogger<ItemRepository>>(),
                 ct);
         });
@@ -114,7 +114,7 @@ public static class ServiceCollectionExtensions
             var toDomainConverter = provider
                 .GetRequiredService<IToDomainConverter<ItemCategories.Entities.ItemCategory, IItemCategory>>();
             var toEntityConverter = provider
-                .GetRequiredService<IToEntityConverter<IItemCategory, ItemCategories.Entities.ItemCategory>>();
+                .GetRequiredService<IToContractConverter<IItemCategory, ItemCategories.Entities.ItemCategory>>();
             var dispatcher = provider.GetRequiredService<Func<CancellationToken, IDomainEventDispatcher>>();
             var logger = provider.GetRequiredService<ILogger<ItemCategoryRepository>>();
             return ct => new ItemCategoryRepository(context, toDomainConverter, toEntityConverter, dispatcher(ct), logger,
@@ -125,7 +125,7 @@ public static class ServiceCollectionExtensions
             return ct => new ManufacturerRepository(
                 provider.GetRequiredService<ManufacturerContext>(),
                 provider.GetRequiredService<IToDomainConverter<Manufacturers.Entities.Manufacturer, IManufacturer>>(),
-                provider.GetRequiredService<IToEntityConverter<IManufacturer, Manufacturers.Entities.Manufacturer>>(),
+                provider.GetRequiredService<IToContractConverter<IManufacturer, Manufacturers.Entities.Manufacturer>>(),
                 provider.GetRequiredService<ILogger<ManufacturerRepository>>(),
                 ct);
         });
@@ -134,7 +134,7 @@ public static class ServiceCollectionExtensions
             return ct => new StoreRepository(
                 provider.GetRequiredService<StoreContext>(),
                 provider.GetRequiredService<IToDomainConverter<Stores.Entities.Store, IStore>>(),
-                provider.GetRequiredService<IToEntityConverter<IStore, Stores.Entities.Store>>(),
+                provider.GetRequiredService<IToContractConverter<IStore, Stores.Entities.Store>>(),
                 provider.GetRequiredService<Func<CancellationToken, IDomainEventDispatcher>>(),
                 provider.GetRequiredService<ILogger<StoreRepository>>(),
                 ct);
@@ -162,7 +162,6 @@ public static class ServiceCollectionExtensions
         services.AddScoped(_ => new SemaphoreSlim(1, 1));
         services.AddScoped<ITransactionGenerator, TransactionGenerator>();
 
-        services.AddImplementationOfGenericType(assembly, typeof(IToEntityConverter<,>));
         services.AddImplementationOfGenericType(assembly, typeof(IToContractConverter<,>));
         services.AddImplementationOfGenericType(assembly, typeof(IToDomainConverter<,>));
     }

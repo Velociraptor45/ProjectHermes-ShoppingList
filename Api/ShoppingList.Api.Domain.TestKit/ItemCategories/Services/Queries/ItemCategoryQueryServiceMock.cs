@@ -13,4 +13,10 @@ public class ItemCategoryQueryServiceMock : Mock<IItemCategoryQueryService>
     {
         Setup(m => m.GetAsync(itemCategoryId)).ReturnsAsync(returnValue);
     }
+
+    public void SetupGetAsync(string searchInput, bool includeDeleted,
+        IEnumerable<ItemCategorySearchResultReadModel> returnValue)
+    {
+        Setup(m => m.GetAsync(searchInput, includeDeleted)).ReturnsAsync(returnValue);
+    }
 }

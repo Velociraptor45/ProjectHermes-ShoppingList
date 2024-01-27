@@ -19,6 +19,7 @@ public enum ErrorReasonCode
     ItemNotInSection = 15,
     SectionInStoreNotFound = 16,
     ItemAlreadyInSection = 17,
+    SectionNotPartOfStore = 18,
     SectionAlreadyInShoppingList = 20,
     MultipleAvailabilitiesForStore = 21,
     CannotModifyItemAsItemWithTypes = 22,

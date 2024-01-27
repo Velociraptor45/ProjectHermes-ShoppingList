@@ -140,12 +140,12 @@ public class ItemCategoryController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ItemCategoryContract), StatusCodes.Status201Created)]
     [Route("")]
     public async Task<IActionResult> CreateItemCategoryAsync([FromQuery] string name,
         CancellationToken cancellationToken = default)
     {
-        var command = new CreateItemCategoryCommand(new ItemCategoryName(name));
+        var command = _converters.ToDomain<string, CreateItemCategoryCommand>(name);
         var model = await _commandDispatcher.DispatchAsync(command, cancellationToken);
 
         var contract = _converters.ToContract<IItemCategory, ItemCategoryContract>(model);
@@ -155,15 +155,15 @@ public class ItemCategoryController : ControllerBase
 
     [HttpDelete]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+    [ProducesResponseType(typeof(ErrorContract), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ErrorContract), StatusCodes.Status422UnprocessableEntity)]
     [Route("{id}")]
     public async Task<IActionResult> DeleteItemCategoryAsync([FromRoute] Guid id,
         CancellationToken cancellationToken = default)
     {
         try
         {
-            var command = new DeleteItemCategoryCommand(new ItemCategoryId(id));
+            var command = _converters.ToDomain<Guid, DeleteItemCategoryCommand>(id);
             await _commandDispatcher.DispatchAsync(command, cancellationToken);
         }
         catch (DomainException e)

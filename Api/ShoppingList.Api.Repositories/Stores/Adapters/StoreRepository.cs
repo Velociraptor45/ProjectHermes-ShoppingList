@@ -17,21 +17,21 @@ public class StoreRepository : IStoreRepository
 {
     private readonly StoreContext _dbContext;
     private readonly IToDomainConverter<Store, IStore> _toDomainConverter;
-    private readonly IToEntityConverter<IStore, Store> _toEntityConverter;
+    private readonly IToContractConverter<IStore, Store> _toContractConverter;
     private readonly ILogger<StoreRepository> _logger;
     private readonly CancellationToken _cancellationToken;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
 
     public StoreRepository(StoreContext dbContext,
         IToDomainConverter<Store, IStore> toDomainConverter,
-        IToEntityConverter<IStore, Store> toEntityConverter,
+        IToContractConverter<IStore, Store> toContractConverter,
         Func<CancellationToken, IDomainEventDispatcher> domainEventDispatcherDelegate,
         ILogger<StoreRepository> logger,
         CancellationToken cancellationToken)
     {
         _dbContext = dbContext;
         _toDomainConverter = toDomainConverter;
-        _toEntityConverter = toEntityConverter;
+        _toContractConverter = toContractConverter;
         _domainEventDispatcher = domainEventDispatcherDelegate(cancellationToken);
         _logger = logger;
         _cancellationToken = cancellationToken;
@@ -99,7 +99,7 @@ public class StoreRepository : IStoreRepository
             return await StoreAsNew(store);
         }
 
-        var updatedEntity = _toEntityConverter.ToEntity(store);
+        var updatedEntity = _toContractConverter.ToContract(store);
 
         var existingRowVersion = existingEntity.RowVersion;
         _dbContext.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
@@ -158,7 +158,7 @@ public class StoreRepository : IStoreRepository
 
     private async Task<IStore> StoreAsNew(IStore store)
     {
-        var entity = _toEntityConverter.ToEntity(store);
+        var entity = _toContractConverter.ToContract(store);
         _dbContext.Entry(entity).State = EntityState.Added;
 
         foreach (var section in entity.Sections)

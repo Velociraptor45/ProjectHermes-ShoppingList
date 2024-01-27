@@ -53,7 +53,7 @@ public class ShoppingListTests
             var action = () => sut.AddItem(_fixture.Item, _fixture.SectionId.Value);
 
             // Assert
-            action.Should().ThrowDomainException(ErrorReasonCode.SectionInStoreNotFound);
+            action.Should().ThrowDomainException(ErrorReasonCode.SectionNotPartOfStore);
         }
 
         [Fact]

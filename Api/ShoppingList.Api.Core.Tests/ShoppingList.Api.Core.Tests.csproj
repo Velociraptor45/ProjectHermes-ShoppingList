@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingList.Api.Core\ShoppingList.Api.Core.csproj" />
+    <ProjectReference Include="..\ShoppingList.Api.Domain.TestKit\ShoppingList.Api.Domain.TestKit.csproj" />
   </ItemGroup>
 
   <ItemGroup>

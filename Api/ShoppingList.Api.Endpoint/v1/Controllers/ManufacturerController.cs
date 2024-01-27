@@ -43,7 +43,7 @@ public class ManufacturerController : ControllerBase
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(IEnumerable<ManufacturerContract>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ManufacturerContract), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ErrorContract), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ErrorContract), StatusCodes.Status422UnprocessableEntity)]
     [Route("{id:guid}")]
@@ -145,7 +145,7 @@ public class ManufacturerController : ControllerBase
     public async Task<IActionResult> CreateManufacturerAsync([FromQuery] string name,
         CancellationToken cancellationToken = default)
     {
-        var command = new CreateManufacturerCommand(new ManufacturerName(name));
+        var command = _converters.ToDomain<string, CreateManufacturerCommand>(name);
         var model = await _commandDispatcher.DispatchAsync(command, cancellationToken);
 
         var contract = _converters.ToContract<IManufacturer, ManufacturerContract>(model);
@@ -163,12 +163,14 @@ public class ManufacturerController : ControllerBase
     {
         try
         {
-            var command = new DeleteManufacturerCommand(new ManufacturerId(id));
+            var command = _converters.ToDomain<Guid, DeleteManufacturerCommand>(id);
             await _commandDispatcher.DispatchAsync(command, cancellationToken);
         }
         catch (DomainException e)
         {
             var errorContract = _converters.ToContract<IReason, ErrorContract>(e.Reason);
+            if (e.Reason.ErrorCode == ErrorReasonCode.ManufacturerNotFound)
+                return NotFound(errorContract);
 
             return UnprocessableEntity(errorContract);
         }

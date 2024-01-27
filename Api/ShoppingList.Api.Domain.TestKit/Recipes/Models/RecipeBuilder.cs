@@ -29,9 +29,9 @@ public class RecipeBuilder : DomainTestBuilderBase<Recipe>
         return this;
     }
 
-    public RecipeBuilder WithSteps(PreparationSteps steps)
+    public RecipeBuilder WithSteps(PreparationSteps preparationSteps)
     {
-        FillConstructorWith(nameof(steps), steps);
+        FillConstructorWith(nameof(preparationSteps), preparationSteps);
         return this;
     }
 

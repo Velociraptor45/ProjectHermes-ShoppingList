@@ -12,5 +12,5 @@ public class SectionNotPartOfStoreReason : IReason
 
     public string Message { get; }
 
-    public ErrorReasonCode ErrorCode => ErrorReasonCode.SectionInStoreNotFound;
+    public ErrorReasonCode ErrorCode => ErrorReasonCode.SectionNotPartOfStore;
 }

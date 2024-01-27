@@ -5,6 +5,11 @@ namespace ProjectHermes.ShoppingList.Api.Repositories.TestKit.ShoppingLists.Enti
 
 public class ShoppingListEntityBuilder : TestBuilderBase<Repositories.ShoppingLists.Entities.ShoppingList>
 {
+    public ShoppingListEntityBuilder()
+    {
+        WithItemsOnList(new ItemsOnListEntityBuilder().CreateMany(3).ToList());
+    }
+
     public ShoppingListEntityBuilder WithId(Guid id)
     {
         FillPropertyWith(p => p.Id, id);

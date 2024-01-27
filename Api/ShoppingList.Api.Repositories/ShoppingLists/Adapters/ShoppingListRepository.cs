@@ -16,19 +16,19 @@ public class ShoppingListRepository : IShoppingListRepository
 {
     private readonly ShoppingListContext _dbContext;
     private readonly IToDomainConverter<Entities.ShoppingList, IShoppingList> _toDomainConverter;
-    private readonly IToEntityConverter<IShoppingList, Entities.ShoppingList> _toEntityConverter;
+    private readonly IToContractConverter<IShoppingList, Entities.ShoppingList> _toContractConverter;
     private readonly ILogger<ShoppingListRepository> _logger;
     private readonly CancellationToken _cancellationToken;
 
     public ShoppingListRepository(ShoppingListContext dbContext,
         IToDomainConverter<Entities.ShoppingList, IShoppingList> toDomainConverter,
-        IToEntityConverter<IShoppingList, Entities.ShoppingList> toEntityConverter,
+        IToContractConverter<IShoppingList, Entities.ShoppingList> toContractConverter,
         ILogger<ShoppingListRepository> logger,
         CancellationToken cancellationToken)
     {
         _dbContext = dbContext;
         _toDomainConverter = toDomainConverter;
-        _toEntityConverter = toEntityConverter;
+        _toContractConverter = toContractConverter;
         _logger = logger;
         _cancellationToken = cancellationToken;
     }
@@ -132,7 +132,7 @@ public class ShoppingListRepository : IShoppingListRepository
     private async Task StoreModifiedListAsync(Entities.ShoppingList existingEntity,
         IShoppingList shoppingList)
     {
-        var updatedEntity = _toEntityConverter.ToEntity(shoppingList);
+        var updatedEntity = _toContractConverter.ToContract(shoppingList);
         var onListMappings = existingEntity.ItemsOnList.ToDictionary(map => (map.ItemId, map.ItemTypeId));
 
         var existingRowVersion = existingEntity.RowVersion;
@@ -176,7 +176,7 @@ public class ShoppingListRepository : IShoppingListRepository
 
     private async Task StoreAsNewListAsync(IShoppingList shoppingList)
     {
-        var entity = _toEntityConverter.ToEntity(shoppingList);
+        var entity = _toContractConverter.ToContract(shoppingList);
 
         _dbContext.Entry(entity).State = EntityState.Added;
         foreach (var onListMap in entity.ItemsOnList)

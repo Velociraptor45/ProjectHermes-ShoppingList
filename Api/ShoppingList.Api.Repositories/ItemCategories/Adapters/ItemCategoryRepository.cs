@@ -16,21 +16,21 @@ public class ItemCategoryRepository : IItemCategoryRepository
 {
     private readonly ItemCategoryContext _dbContext;
     private readonly IToDomainConverter<Entities.ItemCategory, IItemCategory> _toModelConverter;
-    private readonly IToEntityConverter<IItemCategory, Entities.ItemCategory> _toEntityConverter;
+    private readonly IToContractConverter<IItemCategory, Entities.ItemCategory> _toContractConverter;
     private readonly ILogger<ItemCategoryRepository> _logger;
     private readonly CancellationToken _cancellationToken;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
 
     public ItemCategoryRepository(ItemCategoryContext dbContext,
         IToDomainConverter<Entities.ItemCategory, IItemCategory> toModelConverter,
-        IToEntityConverter<IItemCategory, Entities.ItemCategory> toEntityConverter,
+        IToContractConverter<IItemCategory, Entities.ItemCategory> toContractConverter,
         IDomainEventDispatcher domainEventDispatcher,
         ILogger<ItemCategoryRepository> logger,
         CancellationToken cancellationToken)
     {
         _dbContext = dbContext;
         _toModelConverter = toModelConverter;
-        _toEntityConverter = toEntityConverter;
+        _toContractConverter = toContractConverter;
         _domainEventDispatcher = domainEventDispatcher;
         _logger = logger;
         _cancellationToken = cancellationToken;
@@ -98,7 +98,7 @@ public class ItemCategoryRepository : IItemCategoryRepository
 
     public async Task<IItemCategory> StoreAsync(IItemCategory model)
     {
-        var convertedEntity = _toEntityConverter.ToEntity(model);
+        var convertedEntity = _toContractConverter.ToContract(model);
         var existingEntity = await FindTrackedEntityById(model.Id, _cancellationToken);
 
         if (existingEntity is null)

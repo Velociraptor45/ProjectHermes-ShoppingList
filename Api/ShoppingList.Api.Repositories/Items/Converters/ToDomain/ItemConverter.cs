@@ -10,7 +10,7 @@ using Item = ProjectHermes.ShoppingList.Api.Repositories.Items.Entities.Item;
 
 namespace ProjectHermes.ShoppingList.Api.Repositories.Items.Converters.ToDomain;
 
-public class ItemConverter : IToDomainConverter<Entities.Item, IItem>
+public class ItemConverter : IToDomainConverter<Item, IItem>
 {
     private readonly IItemFactory _itemFactory;
     private readonly IToDomainConverter<Entities.ItemType, IItemType> _itemTypeConverter;
@@ -34,22 +34,19 @@ public class ItemConverter : IToDomainConverter<Entities.Item, IItem>
         var manufacturerId = source.ManufacturerId.HasValue
             ? new ManufacturerId(source.ManufacturerId.Value)
             : (ManufacturerId?)null;
-        var temporaryId = source.CreatedFrom.HasValue
-            ? new TemporaryItemId(source.CreatedFrom.Value)
-            : (TemporaryItemId?)null;
 
         ItemQuantityInPacket? itemQuantityInPacket = null;
         if (source.QuantityInPacket is null)
         {
             if (source.QuantityTypeInPacket is not null)
                 throw new InvalidOperationException(
-                    $"Invalid data state for item {source.Id}: QuantityInPacket is null but QuantityTypeInPacket isn't.");
+                    $"Invalid data state for item {source.Id}: QuantityInPacket is null but QuantityTypeInPacket isn't");
         }
         else
         {
             if (source.QuantityTypeInPacket is null)
                 throw new InvalidOperationException(
-                    $"Invalid data state for item {source.Id}: QuantityInPacket isn't null but QuantityTypeInPacket is.");
+                    $"Invalid data state for item {source.Id}: QuantityInPacket isn't null but QuantityTypeInPacket is");
 
             itemQuantityInPacket = new ItemQuantityInPacket(
                 new Quantity(source.QuantityInPacket.Value),
@@ -62,7 +59,7 @@ public class ItemConverter : IToDomainConverter<Entities.Item, IItem>
             var itemTypes = _itemTypeConverter.ToDomain(source.ItemTypes);
 
             if (itemCategoryId is null)
-                throw new InvalidOperationException("ItemCategoryId mustn't be null for an item with types.");
+                throw new InvalidOperationException("ItemCategoryId mustn't be null for an item with types");
 
             item = (AggregateRoot)_itemFactory.Create(
                 new ItemId(source.Id),
@@ -82,6 +79,9 @@ public class ItemConverter : IToDomainConverter<Entities.Item, IItem>
         {
             List<ItemAvailability> availabilities = _itemAvailabilityConverter.ToDomain(source.AvailableAt)
                 .ToList();
+            var temporaryId = source.CreatedFrom.HasValue
+                ? new TemporaryItemId(source.CreatedFrom.Value)
+                : (TemporaryItemId?)null;
 
             item = (AggregateRoot)_itemFactory.Create(
                 new ItemId(source.Id),

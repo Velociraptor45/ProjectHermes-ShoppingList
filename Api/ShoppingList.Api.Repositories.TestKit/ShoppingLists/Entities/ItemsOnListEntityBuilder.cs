@@ -7,7 +7,7 @@ public class ItemsOnListEntityBuilder : TestBuilderBase<ItemsOnList>
 {
     public ItemsOnListEntityBuilder()
     {
-        WithShoppingList(null);
+        WithoutShoppingList();
     }
 
     public ItemsOnListEntityBuilder WithId(int id)
